@@ -17,7 +17,7 @@ int main() {
     printHeader();
 
     // Setup the game
-    initGame();
+    playMinesweeper();
 
     return 0;
 }
