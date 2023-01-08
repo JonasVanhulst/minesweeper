@@ -1,20 +1,27 @@
 #ifndef MINESWEEPER_H
 #define MINESWEEPER_H
 
+//** Include libraries
 #include "string.h"
 #include "ctype.h"
 #include "stdlib.h"
 #include "time.h"
 #include "stdbool.h"
 
+// Define constants
 #define FIELD_ROWS 8
 #define FIELD_COLS 8
 #define COL_COUNT_START 1
 #define MAX_LEN_PLAYER_NAME 20
 
+
+// Minefields as global variables
 int userInput[2];
 int minefield[9][9], emptyMinefield[9][9], gameOverMinefield[9][9];
 
+/**
+ * Function to print the header at the start of each game
+ */
 static void printHeader() {
     printf("           _                                                   \n"
            "          (_)                                                  \n"
@@ -29,17 +36,21 @@ static void printHeader() {
     printf("\n+-------------------------------------------------------------------+");
 }
 
+/**
+ * Function to create the minefields based on the wanted total mines
+ * @param totalMines amount of mines wanted on the field
+ */
 static void createMinefield(int totalMines) {
     int mines = 0;
     int row, col = COL_COUNT_START;
     srand(time(NULL));
 
+    // Fill the field with '-' at the start of the game
     while (col <= FIELD_COLS) {
         while (row <= FIELD_ROWS) {
             minefield[row][col] = '-';
             emptyMinefield[row][col] = minefield[row][col];
-            gameOverMinefield[row][col] =  minefield[row][col];
-
+            gameOverMinefield[row][col] = minefield[row][col];
             row++;
         }
         row = 1;
@@ -47,6 +58,8 @@ static void createMinefield(int totalMines) {
     }
 
     col = 1;
+
+    // Place mines randomly on field
     while (mines < totalMines) {
         row = rand() % FIELD_ROWS + 1;
         col = rand() % FIELD_COLS + 1;
@@ -61,19 +74,12 @@ static void createMinefield(int totalMines) {
     col = 1;
 };
 
-int findIndex(char val) {
-    char lookup[10] = {' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
-    int foundIndex = -1;
-
-    for (int i = 0; i < sizeof(lookup); i++) {
-        if (lookup[i] == val) {
-            foundIndex = i;
-            break;
-        }
-    }
-    return foundIndex;
-}
-
+/**
+ * Print minefield based on pointer to array
+ * @param arr reference to array
+ * @attention This function uses a pointer instead of array copying to save space in memory and
+ * we don't have to create 3 functions to print each minefield (minefield, emptyMinefield, gameOverfield)
+ */
 static void printField(int (*arr)[9]) {
     printf("   ");
     for (int i = 65; i < 73; i++) {
@@ -89,6 +95,33 @@ static void printField(int (*arr)[9]) {
     }
 }
 
+/**
+ * Function to search for a letter in the lookup table to get the index
+ * @param val character value
+ * @return found index or -1 if not found
+ * @brief This function is used to translate input 1B to 12 so it can be
+ * used directly in the program as locations in the minefield
+ */
+int findIndex(char val) {
+    // create lookup table according to positioning of the minefield
+    char lookup[10] = {' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
+    int foundIndex = -1;
+
+    for (int i = 0; i < sizeof(lookup); i++) {
+        if (lookup[i] == val) {
+            foundIndex = i;
+            break;
+        }
+    }
+    return foundIndex;
+}
+
+/**
+ * Translate user input from <int><char> or <char><int> to <int><int> so it can be used in the minefield as location
+ * @param row Player's chosen row
+ * @param col Player's chosen col
+ * @return true or false if the input is valid
+ */
 static bool translatePlayerInput(char row, char col) {
     if (atoi(&row) == 0) {
         userInput[1] = findIndex(tolower(row));
@@ -100,10 +133,33 @@ static bool translatePlayerInput(char row, char col) {
         // printf("Last entry was a char : %d,%d\n", userInput[0], userInput[1]);
     }
 
+    // check if guess is between valid boundaries
     return (userInput[0] >= COL_COUNT_START && userInput[0] <= 8 && userInput[1] >= COL_COUNT_START &&
             userInput[1] <= 8) ? true : false;
 }
 
+/**
+ * Function to check how many fields are cleared
+ * @return number of cleared fields
+ */
+int checkClearedFields() {
+    int counter = 0;
+    for (int i = 1; i < 9; i++) {
+        for (int j = 1; j < 9; j++) {
+            if (emptyMinefield[i][j] != '-') {
+                counter++;
+            }
+        }
+    }
+    return counter;
+}
+
+/**
+ * Function to count the surrounding mines
+ * @param rowToCheck
+ * @param colToCheck
+ * @return
+ */
 int countSurroundingMines(int rowToCheck, int colToCheck) {
     int counter = 0;
     for (int i = rowToCheck-1; i <= rowToCheck + 1; i++) {
@@ -116,6 +172,11 @@ int countSurroundingMines(int rowToCheck, int colToCheck) {
     return counter;
 }
 
+/**
+ * Function to reveal near scores when a guess is made (flood fill) (this uses recursion)
+ * @param row row of the minefield
+ * @param col col of the minefield
+ */
 void revealNearScores(int row, int col) {
     if (countSurroundingMines(row, col) != 0) {
         emptyMinefield[row][col] = countSurroundingMines(row, col) + 48;
@@ -132,18 +193,10 @@ void revealNearScores(int row, int col) {
     }
 }
 
-int checkClearedFields() {
-    int counter = 0;
-    for (int i = 1; i < 9; i++) {
-        for (int j = 1; j < 9; j++) {
-            if (emptyMinefield[i][j] != '-') {
-                counter++;
-            }
-        }
-    }
-    return counter;
-}
-
+/**
+ * Get the move from the player
+ * @return true/false if player hit a mine else false and game can continue
+ */
 static bool getPlayerGuess() {
     char moveX, moveY;
 
@@ -151,13 +204,15 @@ static bool getPlayerGuess() {
 
     printf("\nPlace your move 🕵️ : ");
     scanf(" %c %c", &moveX, &moveY);
+
+    // Call function to translate <int><char> or <char><int> to <int><int>
     if (translatePlayerInput(moveX, moveY)) {
         if (emptyMinefield[userInput[0]][userInput[1]] != '-') {
             printf("You already searched for a 💣 on this field! \n\n");
         } else if (minefield[userInput[0]][userInput[1]] == '#') {
             return true;
         } else {
-           // emptyMinefield[userInput[0]][userInput[1]] = '0';
+            // emptyMinefield[userInput[0]][userInput[1]] = '0';
             revealNearScores(userInput[0], userInput[1]);
         }
         return false;
@@ -165,20 +220,14 @@ static bool getPlayerGuess() {
     return false;
 }
 
-static void gameOver() {
-        printf("\n     .-^^---....,,--       \n _--                  --  \n<       "
-               "                 >)\n|                         | \n \\._             "
-               "      _./  \n    ```--. . , ; .--'''       \n          | |   |       "
-               "      \n       .-=||  | "
-               "|=-.   \n       `-=#$%&%$#=-'   \n          | ;  :|     \n "
-               "___.,-#%&$@%#&#~,._____\n");
-        printf("\nGAME OVER ❌, you hit a 💣 !\n\n");
-        printField(gameOverMinefield);
-        printf("\nBetter luck next time 👍 !\n");
-}
-
-
+/**
+ * Function to check for win condition and print progress
+ * @param totalMineOnField
+ * @param guessCount amount of guesses
+ * @return true/false player has won or not
+ */
 bool checkForWin(int totalMineOnField, int guessCount) {
+    // Calculate percentage to complete
     float percentComplete = (((float) checkClearedFields() + totalMineOnField) / 64) * 100;
     printf("\n+-----------------------------------------------------+\n| Amount of "
            "moves = %3.d              Progress = %2.2f%% "
@@ -193,11 +242,32 @@ bool checkForWin(int totalMineOnField, int guessCount) {
     return false;
 }
 
+/**
+ * Function to print game over art
+ * @return void
+ */
+static void gameOver() {
+    printf("\n     .-^^---....,,--       \n _--                  --  \n<       "
+           "                 >)\n|                         | \n \\._             "
+           "      _./  \n    ```--. . , ; .--'''       \n          | |   |       "
+           "      \n       .-=||  | "
+           "|=-.   \n       `-=#$%&%$#=-'   \n          | ;  :|     \n "
+           "___.,-#%&$@%#&#~,._____\n");
+    printf("\nGAME OVER ❌, you hit a 💣 !\n\n");
+    printField(gameOverMinefield);
+    printf("\nBetter luck next time 👍 !\n");
+}
+
+/**
+ * Function to start a new game
+ * @return void
+ */
 static void playNewGame() {
+    int guessCount = 0;
     short totalMinesOnField = 0;
+
     bool isGameOver = false;
     bool isWin = false;
-    int guessCount = 0;
 
     // Ask user for total bombs
     printf("\nTime for a new game 💥, how many 💣 would you like to place on the field ? ");
@@ -209,16 +279,21 @@ static void playNewGame() {
     printField(gameOverMinefield);
 
     while (!isGameOver && !isWin) {
+        // Check if player hit a mine
         isGameOver = getPlayerGuess();
         guessCount++;
+        // Check for win condition
         isWin = checkForWin(totalMinesOnField, guessCount);
 
+        // If player lost end game
         if (isGameOver) gameOver();
     }
 }
 
-
-
+/**
+ * Initial function to start the game
+ * @return void
+ */
 static void playMinesweeper() {
     char playerName[MAX_LEN_PLAYER_NAME];
     char menuChoice;
@@ -251,4 +326,5 @@ static void playMinesweeper() {
             exit(EXIT_FAILURE);
     }
 }
+
 #endif //MINESWEEPER_H

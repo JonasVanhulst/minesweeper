@@ -44,26 +44,26 @@ getoonde velden t.o.v. totaal aantal goede velden. Eens het laatste niet bom vel
 wordt, feliciteer je de speler.
 
 ## Punten waarop beoordeeld wordt ☑️
-- [ ] Printen van goede verzorgde berichten, velden en menu's
-- [ ] Juist gebruik van variabele, zinvolle consistente naamgeving, geen overbodige/nutteloze variabelen en correcte datatypes bij scanf()
-- [ ] Voortgangspercentage is juist berekend en met 2 cijfers na de komma weergegeven
-- [ ] Bij het spelen van het veld, worden de juiste condities gecontroleerd. M.a.w. wanneer een bom geselecteerd wordt, is het spel afgelopen; wanneer een 0 geselecteerd wordt, worden alle aangesloten velden die ook 0 zijn vrijgespeeld (i.e. flood fill)
-- [ ] Velden worden geprint en getest met for-loops en het spel (en eventueel input) draait binnen while-lussen
-- [ ] Gebruik van goede functies, zinvolle consistente naamgeving, geen onnodige duplicaten code indien het in een functie kon en maximaal 32 code-lijnen (geen lege lijnen of lijnen met enkel haakjes) in een functie
-- [ ] Alle functies in een header file
-- [ ] Het speelveld is 8x8 groot en wordt voor te printen bijgehouden in een 2D array
-- [ ] Strings worden gebruikt voor ingave van de plaats op het veld en kunnen nummer met letter of letter met nummer zijn (niet hoofdletter gevoelig). Ook kan er het woord "bewaren" kan zijn (niet hoofdletter gevoelig) om het spel te bewaren. Daarbij kan "laden" i.p.v. aantal bommen ingegeven worden.
-- [ ] De hele code is netjes gedocumenteerd in een correcte flowchart (zie miro). Zet de link naar de miro in de code in comment !
+- [x] Printen van goede verzorgde berichten, velden en menu's
+- [x] Juist gebruik van variabele, zinvolle consistente naamgeving, geen overbodige/nutteloze variabelen en correcte datatypes bij scanf()
+- [x] Voortgangspercentage is juist berekend en met 2 cijfers na de komma weergegeven
+- [x] Bij het spelen van het veld, worden de juiste condities gecontroleerd. M.a.w. wanneer een bom geselecteerd wordt, is het spel afgelopen; wanneer een 0 geselecteerd wordt, worden alle aangesloten velden die ook 0 zijn vrijgespeeld (i.e. flood fill)
+- [x] Velden worden geprint en getest met for-loops en het spel (en eventueel input) draait binnen while-lussen
+- [x] Gebruik van goede functies, zinvolle consistente naamgeving, geen onnodige duplicaten code indien het in een functie kon en maximaal 32 code-lijnen (geen lege lijnen of lijnen met enkel haakjes) in een functie
+- [x] Alle functies in een header file
+- [x] Het speelveld is 8x8 groot en wordt voor te printen bijgehouden in een 2D array
+- [x] Strings worden gebruikt voor ingave van de plaats op het veld en kunnen nummer met letter of letter met nummer zijn (niet hoofdletter gevoelig). Ook kan er het woord "bewaren" kan zijn (niet hoofdletter gevoelig) om het spel te bewaren. Daarbij kan "laden" i.p.v. aantal bommen ingegeven worden.
+- [x] De hele code is netjes gedocumenteerd in een correcte flowchart (zie miro). Zet de link naar de miro in de code in comment !
 - [ ] Een 8x8 spel kan bijgehouden worden in een 64 bit getal van alle bommen bij te houden
 - [ ] Van een 8x8 spel kan tussentijds het vrijgespeelde veld opgevraagd worden in een 64 bit getal
 - [ ] Een 8x8 spel kan ingeladen worden door twee 64 bit getallen (1 van alle bommen en 1 van het vrijgespeelde deel) als hexadecimaal in te lezen en te gebruiken
-- [ ] Het geheel werk volledig zonder crashen
-- [ ] Een mooie extra eens de rest werkt (zie de lijst hieronder)
+- [x] Het geheel werk volledig zonder crashen
+- [x] Een mooie extra eens de rest werkt (zie de lijst hieronder)
 
 ### Mogelijke extra's 👾
 Hier kan je mogelijke mooie extra's vinden moest je tijd over hebben.
 NOTE: er valt hier maar 1 punt te verdienen!
 
-- [ ] ASCII art
-- [ ] Recursieve functies (flood fill)
+- [x] ASCII art
+- [x] Recursieve functies (flood fill)
 - [ ] Highscores met namen
